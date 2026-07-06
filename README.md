@@ -11,7 +11,7 @@ Sistema para procesar pedidos B2B publicados en Kafka. Cada pedido se enriquece 
 
 ## Estado
 
-El proyecto está en construcción. La primera etapa prepara el repositorio y define la configuración que compartirán los servicios.
+El proyecto está en construcción. Actualmente incluye la API de productos con un catálogo en memoria y respuestas JSON.
 
 ## Requisitos locales
 
@@ -19,4 +19,24 @@ El proyecto está en construcción. La primera etapa prepara el repositorio y de
 - Docker
 - Docker Compose
 
-Las instrucciones de ejecución se agregarán cuando exista el primer flujo funcional.
+## Products API
+
+La API requiere la variable `PRODUCTS_API_PORT` y expone:
+
+- `GET /products/{productId}`
+- `GET /health`
+
+Para ejecutar las pruebas sin instalar Go en el host:
+
+```bash
+docker build -t products-api ./products-api
+docker run --rm -e PRODUCTS_API_PORT=8081 -p 8081:8081 products-api
+```
+
+El Dockerfile ejecuta la suite de pruebas antes de compilar el binario.
+
+Una vez iniciado, se puede consultar un producto con:
+
+```bash
+curl http://localhost:8081/products/PRD-001
+```
