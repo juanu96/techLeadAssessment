@@ -11,7 +11,7 @@ Sistema para procesar pedidos B2B publicados en Kafka. Cada pedido se enriquece 
 
 ## Estado
 
-El proyecto está en construcción. Actualmente incluye la API de productos con un catálogo en memoria y respuestas JSON.
+El proyecto está en construcción. Actualmente incluye las APIs de productos y clientes con catálogos en memoria y respuestas JSON.
 
 ## Requisitos locales
 
@@ -39,4 +39,26 @@ Una vez iniciado, se puede consultar un producto con:
 
 ```bash
 curl http://localhost:8081/products/PRD-001
+```
+
+## Clients API
+
+La API requiere la variable `CLIENTS_API_PORT` y expone:
+
+- `GET /clients/{clientId}`
+- `GET /health`
+
+Para construir y ejecutar el servicio:
+
+```bash
+docker build -t clients-api ./clients-api
+docker run --rm -e CLIENTS_API_PORT=8082 -p 8082:8082 clients-api
+```
+
+El Dockerfile ejecuta las pruebas unitarias y end-to-end antes de compilar la aplicación.
+
+Una vez iniciado, se puede consultar un cliente con:
+
+```bash
+curl http://localhost:8082/clients/CLI-99821
 ```
