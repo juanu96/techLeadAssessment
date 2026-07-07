@@ -11,7 +11,7 @@ Sistema para procesar pedidos B2B publicados en Kafka. Cada pedido se enriquece 
 
 ## Estado
 
-El proyecto está en construcción. Actualmente incluye las APIs de productos y clientes con catálogos en memoria y respuestas JSON.
+El proyecto está en construcción. Actualmente incluye las APIs de productos y clientes, la infraestructura local y el núcleo de cálculo de impuestos del worker.
 
 ## Requisitos locales
 
@@ -61,4 +61,15 @@ Una vez iniciado, se puede consultar un cliente con:
 
 ```bash
 curl http://localhost:8082/clients/CLI-99821
+```
+
+## Order Worker
+
+El worker usa Java 21 y Spring Boot WebFlux. El núcleo está separado en capas de dominio, aplicación y puertos de entrada. Los cálculos monetarios usan `BigDecimal` y aplican las tasas definidas para productos gravados, reducidos y exentos.
+
+Para ejecutar las pruebas y validar la cobertura mínima del 70%:
+
+```bash
+cd order-worker
+./mvnw verify
 ```
