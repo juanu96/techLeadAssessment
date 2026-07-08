@@ -154,6 +154,18 @@ cd order-worker
 
 El E2E publica un pedido en Kafka, deja que el worker lo enriquezca y comprueba el documento resultante en MongoDB. Requiere que Docker esté ejecutándose.
 
+## CI y checklist de revisión
+
+El repositorio incluye un workflow en `.github/workflows/ci.yml` para validar cada push y pull request:
+
+- `products-api`: `go test ./...`
+- `clients-api`: instalación limpia, pruebas unitarias, build y e2e
+- `order-worker`: `mvn verify` con cobertura
+
+El E2E del worker con Testcontainers queda como ejecución manual en GitHub Actions para no hacer cada revisión innecesariamente pesada.
+
+También hay una guía corta con comandos locales en `docs/validation-checklist.md`.
+
 ## Configuración
 
 Las variables disponibles están documentadas en `.env.example`. Las principales son:
