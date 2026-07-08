@@ -91,6 +91,79 @@ services:
     volumes:
       - redis-data:/data
 
+  products-api:
+    build:
+      context: ./products-api
+    ports:
+      - "${PRODUCTS_API_PORT:-8081}:8081"
+    environment:
+      PRODUCTS_API_PORT: 8081
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8081/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  clients-api:
+    build:
+      context: ./clients-api
+    ports:
+      - "${CLIENTS_API_PORT:-8082}:8082"
+    environment:
+      CLIENTS_API_PORT: 8082
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8082/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  order-worker:
+    build:
+      context: ./order-worker
+    ports:
+      - "${ORDER_WORKER_PORT:-8080}:8080"
+    environment:
+      ORDER_WORKER_PORT: 8080
+      ORDER_CURRENCY: ${ORDER_CURRENCY:-COP}
+      PRODUCTS_API_URL: http://products-api:8081
+      CLIENTS_API_URL: http://clients-api:8082
+      MONGODB_URI: mongodb://mongodb:27017/orders
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_CONSUMER_GROUP: ${KAFKA_CONSUMER_GROUP:-order-worker}
+      KAFKA_ORDERS_TOPIC: ${KAFKA_ORDERS_TOPIC:-orders-topic}
+      KAFKA_DLT_TOPIC: ${KAFKA_DLT_TOPIC:-orders-dlt}
+      KAFKA_PROCESSING_MAX_ATTEMPTS: ${KAFKA_PROCESSING_MAX_ATTEMPTS:-3}
+      KAFKA_PROCESSING_RETRY_DELAY: ${KAFKA_PROCESSING_RETRY_DELAY:-500ms}
+      PRODUCT_CACHE_TTL: ${PRODUCT_CACHE_TTL:-300s}
+      CLIENT_CACHE_TTL: ${CLIENT_CACHE_TTL:-300s}
+      API_RETRY_MAX_ATTEMPTS: ${API_RETRY_MAX_ATTEMPTS:-3}
+      API_RETRY_WAIT: ${API_RETRY_WAIT:-200ms}
+      API_RESPONSE_TIMEOUT: ${API_RESPONSE_TIMEOUT:-3s}
+      API_CIRCUIT_BREAKER_FAILURE_RATE: ${API_CIRCUIT_BREAKER_FAILURE_RATE:-50}
+      API_CIRCUIT_BREAKER_WINDOW_SIZE: ${API_CIRCUIT_BREAKER_WINDOW_SIZE:-10}
+      API_CIRCUIT_BREAKER_OPEN_DURATION: ${API_CIRCUIT_BREAKER_OPEN_DURATION:-30s}
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      products-api:
+        condition: service_healthy
+      clients-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
 volumes:
   zookeeper-data:
   zookeeper-logs:
