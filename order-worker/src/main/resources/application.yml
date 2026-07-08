@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: order-worker
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${ORDER_WORKER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
