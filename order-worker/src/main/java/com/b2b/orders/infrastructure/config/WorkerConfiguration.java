@@ -2,11 +2,14 @@ package com.b2b.orders.infrastructure.config;
 
 import com.b2b.orders.application.port.in.CalculateOrderTaxesUseCase;
 import com.b2b.orders.application.port.in.EnrichOrderUseCase;
+import com.b2b.orders.application.port.in.ProcessOrderUseCase;
 import com.b2b.orders.application.port.out.ClientCachePort;
 import com.b2b.orders.application.port.out.ClientCatalogPort;
+import com.b2b.orders.application.port.out.EnrichedOrderRepositoryPort;
 import com.b2b.orders.application.port.out.ProductCachePort;
 import com.b2b.orders.application.port.out.ProductCatalogPort;
 import com.b2b.orders.application.service.OrderEnrichmentService;
+import com.b2b.orders.application.service.OrderProcessingService;
 import com.b2b.orders.application.service.OrderTaxService;
 import com.b2b.orders.domain.service.TaxCalculator;
 import com.b2b.orders.infrastructure.cache.RedisClientCacheAdapter;
@@ -123,6 +126,14 @@ public class WorkerConfiguration {
                 properties.currency(),
                 clock
         );
+    }
+
+    @Bean
+    ProcessOrderUseCase processOrderUseCase(
+            EnrichOrderUseCase enrichmentService,
+            EnrichedOrderRepositoryPort repository
+    ) {
+        return new OrderProcessingService(enrichmentService, repository);
     }
 
     @Bean

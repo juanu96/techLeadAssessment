@@ -69,6 +69,10 @@ El worker usa Java 21 y Spring Boot WebFlux. El núcleo está separado en capas 
 
 El enriquecimiento consulta las APIs de productos y clientes con `WebClient`, reutiliza respuestas desde Redis con TTL independiente y aplica Retry y Circuit Breaker. Los productos repetidos dentro de un pedido se consultan una sola vez.
 
+El worker consume `orders-topic` con Reactor Kafka, valida y procesa cada pedido sin bloquear el flujo. Antes de enriquecer consulta MongoDB por un pedido con estado `PROCESSED`; los duplicados se omiten y los nuevos resultados se almacenan en la colección `enriched-orders`.
+
+Cuando el procesamiento agota sus intentos, el mensaje original se publica en `orders-dlt` junto con el tópico, partición, offset, fecha del error, causa y número de intento. El offset de entrada se confirma únicamente después de procesar el pedido o publicar correctamente en DLT.
+
 Para ejecutar las pruebas y validar la cobertura mínima del 70%:
 
 ```bash
