@@ -10,7 +10,8 @@ public record WorkerProperties(
         String currency,
         Services services,
         Cache cache,
-        Resilience resilience
+        Resilience resilience,
+        Kafka kafka
 ) {
     public record Services(URI productsUrl, URI clientsUrl, Duration responseTimeout) {
     }
@@ -24,6 +25,17 @@ public record WorkerProperties(
             float failureRateThreshold,
             int slidingWindowSize,
             Duration openStateDuration
+    ) {
+    }
+
+    public record Kafka(
+            boolean enabled,
+            String bootstrapServers,
+            String groupId,
+            String ordersTopic,
+            String dltTopic,
+            int processingMaxAttempts,
+            Duration retryDelay
     ) {
     }
 }

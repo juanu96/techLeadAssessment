@@ -16,7 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
                 "worker.resilience.wait-duration=200ms",
                 "worker.resilience.failure-rate-threshold=50",
                 "worker.resilience.sliding-window-size=10",
-                "worker.resilience.open-state-duration=30s"
+                "worker.resilience.open-state-duration=30s",
+                "worker.kafka.enabled=false"
         }
 )
 class OrderWorkerApplicationTest {

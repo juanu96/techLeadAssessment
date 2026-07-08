@@ -5,6 +5,8 @@ spring:
     virtual:
       enabled: true
   data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://mongodb:27017/orders}
     redis:
       host: ${REDIS_HOST:redis}
       port: ${REDIS_PORT:6379}
@@ -24,6 +26,14 @@ worker:
     failure-rate-threshold: ${API_CIRCUIT_BREAKER_FAILURE_RATE:50}
     sliding-window-size: ${API_CIRCUIT_BREAKER_WINDOW_SIZE:10}
     open-state-duration: ${API_CIRCUIT_BREAKER_OPEN_DURATION:30s}
+  kafka:
+    enabled: ${KAFKA_CONSUMER_ENABLED:true}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:29092}
+    group-id: ${KAFKA_CONSUMER_GROUP:order-worker}
+    orders-topic: ${KAFKA_ORDERS_TOPIC:orders-topic}
+    dlt-topic: ${KAFKA_DLT_TOPIC:orders-dlt}
+    processing-max-attempts: ${KAFKA_PROCESSING_MAX_ATTEMPTS:3}
+    retry-delay: ${KAFKA_PROCESSING_RETRY_DELAY:500ms}
 
 server:
   port: ${ORDER_WORKER_PORT:8080}
