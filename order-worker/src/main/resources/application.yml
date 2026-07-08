@@ -4,6 +4,26 @@ spring:
   threads:
     virtual:
       enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+
+worker:
+  currency: ${ORDER_CURRENCY:COP}
+  services:
+    products-url: ${PRODUCTS_API_URL}
+    clients-url: ${CLIENTS_API_URL}
+    response-timeout: ${API_RESPONSE_TIMEOUT:3s}
+  cache:
+    product-ttl: ${PRODUCT_CACHE_TTL:300s}
+    client-ttl: ${CLIENT_CACHE_TTL:300s}
+  resilience:
+    max-attempts: ${API_RETRY_MAX_ATTEMPTS:3}
+    wait-duration: ${API_RETRY_WAIT:200ms}
+    failure-rate-threshold: ${API_CIRCUIT_BREAKER_FAILURE_RATE:50}
+    sliding-window-size: ${API_CIRCUIT_BREAKER_WINDOW_SIZE:10}
+    open-state-duration: ${API_CIRCUIT_BREAKER_OPEN_DURATION:30s}
 
 server:
   port: ${ORDER_WORKER_PORT:8080}

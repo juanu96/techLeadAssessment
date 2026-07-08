@@ -65,7 +65,9 @@ curl http://localhost:8082/clients/CLI-99821
 
 ## Order Worker
 
-El worker usa Java 21 y Spring Boot WebFlux. El núcleo está separado en capas de dominio, aplicación y puertos de entrada. Los cálculos monetarios usan `BigDecimal` y aplican las tasas definidas para productos gravados, reducidos y exentos.
+El worker usa Java 21 y Spring Boot WebFlux. El núcleo está separado en capas de dominio, aplicación e infraestructura. Los cálculos monetarios usan `BigDecimal` y aplican las tasas definidas para productos gravados, reducidos y exentos.
+
+El enriquecimiento consulta las APIs de productos y clientes con `WebClient`, reutiliza respuestas desde Redis con TTL independiente y aplica Retry y Circuit Breaker. Los productos repetidos dentro de un pedido se consultan una sola vez.
 
 Para ejecutar las pruebas y validar la cobertura mínima del 70%:
 
