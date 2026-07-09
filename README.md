@@ -166,6 +166,12 @@ El E2E del worker con Testcontainers queda en `.github/workflows/worker-e2e.yml`
 
 También hay una guía corta con comandos locales en `docs/validation-checklist.md`.
 
+Documentos de apoyo:
+
+- `docs/api-contracts.md`: contratos de APIs, Kafka, MongoDB y DLT.
+- `docs/architecture-decisions.md`: decisiones técnicas principales.
+- `docs/assessment-coverage.md`: cobertura de la prueba y validación sugerida.
+
 ## Configuración
 
 Las variables disponibles están documentadas en `.env.example`. Las principales son:
@@ -173,16 +179,31 @@ Las variables disponibles están documentadas en `.env.example`. Las principales
 | Variable | Valor predeterminado | Uso |
 | --- | --- | --- |
 | `KAFKA_BOOTSTRAP_SERVERS` | `kafka:29092` | Brokers usados por el worker |
+| `KAFKA_CONSUMER_ENABLED` | `true` | Activa el consumidor del worker |
 | `KAFKA_CONSUMER_GROUP` | `order-worker` | Grupo del consumidor |
 | `KAFKA_ORDERS_TOPIC` | `orders-topic` | Tópico de entrada |
 | `KAFKA_DLT_TOPIC` | `orders-dlt` | Tópico de errores |
+| `KAFKA_ORDERS_PARTITIONS` | `3` | Particiones del tópico de pedidos en Docker Compose |
+| `KAFKA_DLT_PARTITIONS` | `1` | Particiones del tópico DLT en Docker Compose |
 | `KAFKA_PROCESSING_MAX_ATTEMPTS` | `3` | Intentos antes de DLT |
+| `KAFKA_PROCESSING_RETRY_DELAY` | `500ms` | Espera entre reintentos del mensaje |
 | `MONGODB_URI` | `mongodb://mongodb:27017/orders` | Base de pedidos |
+| `REDIS_HOST` | `redis` | Host de Redis |
+| `REDIS_PORT` | `6379` | Puerto de Redis |
 | `PRODUCT_CACHE_TTL` | `300s` | TTL de productos |
 | `CLIENT_CACHE_TTL` | `300s` | TTL de clientes |
+| `ORDER_CURRENCY` | `COP` | Moneda usada en los totales |
 | `PRODUCTS_API_URL` | `http://products-api:8081` | Catálogo de productos |
 | `CLIENTS_API_URL` | `http://clients-api:8082` | Catálogo de clientes |
+| `API_RETRY_MAX_ATTEMPTS` | `3` | Intentos HTTP hacia catálogos |
+| `API_RETRY_WAIT` | `200ms` | Espera entre reintentos HTTP |
 | `API_RESPONSE_TIMEOUT` | `3s` | Tiempo máximo de respuesta |
+| `API_CIRCUIT_BREAKER_FAILURE_RATE` | `50` | Porcentaje de fallos para abrir circuito |
+| `API_CIRCUIT_BREAKER_WINDOW_SIZE` | `10` | Ventana de llamadas del circuito |
+| `API_CIRCUIT_BREAKER_OPEN_DURATION` | `30s` | Tiempo de circuito abierto |
+| `PRODUCTS_API_PORT` | `8081` | Puerto local de Products API |
+| `CLIENTS_API_PORT` | `8082` | Puerto local de Clients API |
+| `ORDER_WORKER_PORT` | `8080` | Puerto local del worker |
 
 No hay URLs ni credenciales fijas dentro del código Java. Docker Compose proporciona valores locales y cualquier entorno puede reemplazarlos.
 
