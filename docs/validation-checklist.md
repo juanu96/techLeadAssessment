@@ -69,4 +69,4 @@ El workflow `.github/workflows/ci.yml` corre automáticamente en push y pull req
 - `Clients API`: `npm ci`, pruebas unitarias, build y e2e
 - `Order Worker`: `./mvnw -B verify`
 
-El job `Order Worker E2E` queda como ejecución manual desde GitHub Actions porque usa Testcontainers y tarda más.
+El workflow `.github/workflows/worker-e2e.yml` queda como ejecución manual desde GitHub Actions porque usa Testcontainers y tarda más.

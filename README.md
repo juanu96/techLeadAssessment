@@ -162,7 +162,7 @@ El repositorio incluye un workflow en `.github/workflows/ci.yml` para validar ca
 - `clients-api`: instalación limpia, pruebas unitarias, build y e2e
 - `order-worker`: `mvn verify` con cobertura
 
-El E2E del worker con Testcontainers queda como ejecución manual en GitHub Actions para no hacer cada revisión innecesariamente pesada.
+El E2E del worker con Testcontainers queda en `.github/workflows/worker-e2e.yml` como ejecución manual para no hacer cada revisión innecesariamente pesada.
 
 También hay una guía corta con comandos locales en `docs/validation-checklist.md`.
 

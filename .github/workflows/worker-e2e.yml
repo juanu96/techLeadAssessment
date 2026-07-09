@@ -1,0 +1,33 @@
+name: Worker E2E
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: worker-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  order-worker-e2e:
+    name: Order Worker E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: order-worker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Run Testcontainers flow
+        run: ./mvnw -B -Pe2e verify

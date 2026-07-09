@@ -30,11 +30,11 @@ function Invoke-DockerRun {
     param(
         [string]$Image,
         [string]$Path,
-        [string[]]$Command
+        [string[]]$Arguments
     )
 
     $mountPath = (Resolve-Path $Path).Path
-    docker run --rm -v "${mountPath}:/workspace" -w /workspace $Image @Command
+    docker run --rm -v "${mountPath}:/workspace" -w /workspace $Image @Arguments
 }
 
 function Invoke-Npm {
@@ -87,7 +87,7 @@ try {
         }
 
         if (Test-LocalCommand "docker") {
-            Invoke-DockerRun "golang:1.21-bookworm" $productsPath @("go", "test", "./...")
+            Invoke-DockerRun -Image "golang:1.21-bookworm" -Path $productsPath -Arguments @("go", "test", "./...")
             return
         }
 
@@ -96,15 +96,15 @@ try {
 
     Invoke-ProjectStep "Clients API install" {
         Invoke-InDirectory (Join-Path $repoRoot "clients-api") {
-            Invoke-Npm @("ci")
+            Invoke-Npm -Arguments @("ci")
         }
     }
 
     Invoke-ProjectStep "Clients API tests" {
         Invoke-InDirectory (Join-Path $repoRoot "clients-api") {
-            Invoke-Npm @("test")
-            Invoke-Npm @("run", "build")
-            Invoke-Npm @("run", "test:e2e")
+            Invoke-Npm -Arguments @("test")
+            Invoke-Npm -Arguments @("run", "build")
+            Invoke-Npm -Arguments @("run", "test:e2e")
         }
     }
 
@@ -113,13 +113,13 @@ try {
 
         if (Test-LocalCommand "java") {
             Invoke-InDirectory $workerPath {
-                Invoke-MavenWrapper @("-B", "verify")
+                Invoke-MavenWrapper -Arguments @("-B", "verify")
             }
             return
         }
 
         if (Test-LocalCommand "docker") {
-            Invoke-DockerRun "maven:3.9.9-eclipse-temurin-21" $workerPath @("bash", "-lc", "chmod +x mvnw && ./mvnw -B verify")
+            Invoke-DockerRun -Image "maven:3.9.9-eclipse-temurin-21" -Path $workerPath -Arguments @("bash", "-lc", "chmod +x mvnw && ./mvnw -B verify")
             return
         }
 
@@ -133,7 +133,7 @@ try {
             }
 
             Invoke-InDirectory (Join-Path $repoRoot "order-worker") {
-                Invoke-MavenWrapper @("-B", "-Pe2e", "verify")
+                Invoke-MavenWrapper -Arguments @("-B", "-Pe2e", "verify")
             }
         }
     }
